@@ -85,4 +85,71 @@ public class GPlanner
         return queue;
 
     }
+    private bool BuildGraph(Node parent, List<Node> leaves, List<GAction> useableActions, Dictionary<string, int> goal)
+    {
+        /*currentState is going to be filled-up with the states of the world.
+        Now the idea with currentState is, as we go through all of our Actions and build up our branch 
+        is that we keep track of everything that's being satisfied and all the conditions that are changing as we're going through.
+        */
+        bool foundPath = false;
+        foreach (GAction action in useableActions)
+        {
+            if (action.isAchieveableGiven(parent.state))
+            {
+                Dictionary<string, int> currentState = new Dictionary<string, int>(parent.state);
+
+                foreach (KeyValuePair<string, int> eff in action.effects)
+                {
+                    /*So now currentState is going to have not only the state of the world but we're also adding to it the effects
+                     * of the current action and then as we move on, the effects from the next action will be added and the next.
+                     */
+                    if (!currentState.ContainsKey(eff.Key))
+                        currentState.Add(eff.Key, eff.Value);
+                }
+                Node node = new Node(parent, parent.cost + action.cost, currentState, action);
+
+                if (GoalAchieved(goal, currentState))
+                {
+                    leaves.Add(node);
+                    foundPath = true;
+                }
+                else
+                {
+                    /*THIS is going to take out of our usableActions, the Action that we've already created a node in our graph for,
+                     * so that as we go along the branches, this list of usableActions becomes smaller and smaller, 
+                     * which means you can't create a circular path anywhere. So you're not going to end up with some kind 
+                     * of endless circle that you're searching through for creating a plan.
+                     */
+                    List<GAction> subset = ActionSubset(useableActions, action);
+                    bool found = BuildGraph(node, leaves, subset, goal);
+                    if (found)
+                    {
+                        foundPath = true;
+                    }
+                }
+            }
+        }
+        return foundPath;
+    }
+
+    private bool GoalAchieved(Dictionary<string, int> goal, Dictionary<string, int> state)
+    {
+        foreach(KeyValuePair<string, int> g in goal)
+        {
+            if (!state.ContainsKey(g.Key))
+                return false;
+        }
+            return true;
+    }
+
+    private List<GAction> ActionSubset(List<GAction> actions, GAction removeMe)
+    {
+        List<GAction> subset = new List<GAction>();
+        foreach(GAction a in actions)
+        {
+            if(!a.Equals(removeMe))
+                subset.Add(a);
+        }
+        return subset;
+    }
 }

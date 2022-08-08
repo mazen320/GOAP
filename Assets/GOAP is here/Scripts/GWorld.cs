@@ -13,11 +13,11 @@ public sealed class GWorld
      * and we ONLY want ONE 1 version of the game world environment states
      * we dont want to have copies of it with different values
      */
-    private static WorldState world;    //dictionary holding all the states
+    private static WorldStates world;    //dictionary holding all the states
 
     static GWorld() //our constructor
     {
-        world = new WorldState();
+        world = new WorldStates();
     }
 
     private GWorld()
@@ -28,7 +28,7 @@ public sealed class GWorld
     {
         get { return instance; }
     }
-    public WorldState GetWorld()    // so we can return the status of the world
+    public WorldStates GetWorld()    // so we can return the status of the world
     {
         return world;
     }
