@@ -8,7 +8,7 @@ public abstract class GAction : MonoBehaviour
     public string actionName = "Action";
     public float cost = 1.0f;   //planner will find the cheapest cost, if they are achieveable
     public GameObject target;   //target is the location of the action thats gonna take place
-    public GameObject targetTag;    //so we can pick up gameObjects using tag, if they exist in the hierachy incase there isnt a gameObject target
+    public string targetTag;    //so we can pick up gameObjects using tag, if they exist in the hierachy incase there isnt a gameObject target
     public float duration = 0f; //how long will the agent stand in the particular waypoint, virtually performing the action
     public WorldState[] preConditions;
     public WorldState[] afterEffects;   //these 2 are what the planner is going to match on either side of the action
