@@ -14,7 +14,7 @@ public abstract class GeneralAgent : MonoBehaviour, IGoap
 
     void Start()
     {
-        if(inventory == null)
+        if (inventory == null)
             inventory = gameObject.AddComponent<AgentInventory>();
     }
 
@@ -23,14 +23,13 @@ public abstract class GeneralAgent : MonoBehaviour, IGoap
 	 */
     public HashSet<KeyValuePair<string, object>> GetWorldState()
     {
-        HashSet<KeyValuePair<string, object>> worldData = new HashSet<KeyValuePair<string, object>>();
+        HashSet<KeyValuePair<string, object>> data = new HashSet<KeyValuePair<string, object>>();
 
-        worldData.Add(new KeyValuePair<string, object>("hasEnoughMoney", (inventory.money >= 5)));
-        worldData.Add(new KeyValuePair<string, object>("ownsMoney", (inventory.hasMoney == true)));
+        data.Add(new KeyValuePair<string, object>("hasEnoughMoney", (inventory.money > 5)));
+        data.Add(new KeyValuePair<string, object>("ownsMoney", (inventory.hasMoney != null) ));
 
-        Food[] foods = (Food[])GameObject.FindObjectsOfType(typeof(Food));
-        worldData.Add(new KeyValuePair<string, object>("hasFood", (foods.Length > 0)));
-        return worldData;
+
+        return data;
     }
 
     /**
@@ -63,15 +62,15 @@ public abstract class GeneralAgent : MonoBehaviour, IGoap
         Debug.Log("Plan Aborted ");
     }
 
-    public bool move(ActionG nextAction)
+    public bool move(ActionG next)
     {
         // move towards the NextAction's target
         float step = moveSpeed * Time.deltaTime;
-        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, nextAction.target.transform.position, step);
+        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, next.target.transform.position, step);
 
-        if (gameObject.transform.position.Equals(nextAction.target.transform.position))
+        if (gameObject.transform.position.Equals(next.target.transform.position))
         {
-            nextAction.setIsInRange(true);
+            next.setIsInRange(true);
             return true;
         }
         else

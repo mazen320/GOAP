@@ -11,8 +11,8 @@ public class TestAction1 : ActionG
 
     public TestAction1()
     {
-        addPrerequisites("freeMoney", true); //must have enough money
-        addEffect("hasMoney", true);
+       // addEffect("hasMoney", true);
+        addEffect("hasEnoughMoney", true);
     }
 
     public override void reset()
@@ -46,7 +46,7 @@ public class TestAction1 : ActionG
     public override bool perform(GameObject agent)
     {
         AgentInventory inventory = agent.GetComponent<AgentInventory>();
-        inventory.hasMoney = true;
+        inventory.money += 10;
         Destroy(target);
         bought = true;
         return true;

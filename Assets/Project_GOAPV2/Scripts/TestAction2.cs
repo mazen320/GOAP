@@ -12,6 +12,7 @@ public class TestAction2 : ActionG
 
     public TestAction2()
     {
+        addPrerequisites("hasEnoughMoney", true);
         addEffect("hasMoney", true);
     }
 
@@ -36,17 +37,7 @@ public class TestAction2 : ActionG
 
     public override bool PrePerform(GameObject agent)
     {
-        Food[] foods = (Food[])GameObject.FindObjectsOfType(typeof(Food));
-        if(foods.Length == 0)
-        {
-            return false;
-        }
-        targetFood = foods[0];
-        target = targetFood.gameObject;
-        //GameObject food = GameObject.FindGameObjectWithTag("Food");
-
-        //target = food;
-        return foods[0] != null;
+        return true;
     }
 
     /*
@@ -55,9 +46,7 @@ public class TestAction2 : ActionG
     public override bool perform(GameObject agent)
     {
         AgentInventory inventory = agent.GetComponent<AgentInventory>();
-        inventory.eaten = false;
-        inventory.hasFood = false;
-        eaten = true;
+        inventory.hasMoney = true;
         return true;
     }
 
