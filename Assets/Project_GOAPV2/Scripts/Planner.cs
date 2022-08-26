@@ -28,8 +28,8 @@ public class Planner
      * We need to plan the sequence of actions now
      */
 
-    public Queue<ActionG> plan(GameObject agent, HashSet<ActionG> availableActions, 
-        HashSet<KeyValuePair< string, object>> worldState, 
+    public Queue<ActionG> plan(GameObject agent, HashSet<ActionG> availableActions,
+        HashSet<KeyValuePair<string, object>> worldState,
         HashSet<KeyValuePair<string, object>> goal)
     {
         //here we reset so we can start fresh
@@ -40,7 +40,7 @@ public class Planner
 
         //check action can run because of their prerequiests
         HashSet<ActionG> usableActions = new HashSet<ActionG>();
-        foreach(ActionG action in availableActions)
+        foreach (ActionG action in availableActions)
             usableActions.Add(action);
 
         /*Now that we stored all the actions we can run
@@ -54,7 +54,7 @@ public class Planner
         Node start = new Node(null, 0, worldState, null);
         bool success = buildGraph(start, leaves, usableActions, goal);
 
-        if(!success)
+        if (!success)
         {
             //so we have no plan
             Debug.Log("No plan currently");
@@ -64,13 +64,13 @@ public class Planner
         Node cheapest = null;
         foreach (Node leaf in leaves)   //we have to set the cheapest leaf to the variable cheapest
         {
-            if(cheapest == null)
+            if (cheapest == null)
             {
                 cheapest = leaf;
             }
             else
             {
-                if(leaf.cost < cheapest.cost)
+                if (leaf.cost < cheapest.cost)
                 {
                     cheapest = leaf;
                 }
@@ -80,9 +80,9 @@ public class Planner
         List<ActionG> result = new List<ActionG>();
         Node node = cheapest;
 
-        while(node != null)
+        while (node != null)
         {
-            if(node.action != null)
+            if (node.action != null)
             {
                 result.Insert(0, node.action);  //we insert the action in the front
             }
@@ -90,12 +90,90 @@ public class Planner
         }
 
         Queue<ActionG> queue = new Queue<ActionG>();
-        foreach(ActionG action in result)
+        foreach (ActionG action in result)
         {
             queue.Enqueue(action);
         }
         //now we made the queue of our actions
         return queue;
     }
-  
+
+    //build graph
+    //possible paths are stored in leaves list
+    //lowest cost will be the sequence we will take
+    private bool buildGraph(Node parent, List<Node> leaves, HashSet<ActionG> usableAction, HashSet<KeyValuePair<string, object>> goal)
+    {
+        bool foundPath = false;
+
+        //going to go through our actions avaiable
+        //see if we can use it here
+        foreach (ActionG action in usableAction)
+        {
+            if (stateCheck(action.Prerequisites, parent.state))
+            {
+                //apply action effect to parent state
+                HashSet<KeyValuePair<string, object>> currentState = populateState(parent.state, action.Aftereffects);
+
+                Node node = new Node(parent, parent.cost + action.ActionCost, currentState, action);
+
+                if(stateCheck(goal, currentState))
+                {
+                    //we found the goal
+                    leaves.Add(node);
+                    foundPath = true;
+                }
+                else
+                {
+                    HashSet<ActionG> subset = actionSubset(usableAction, action);
+                    bool found = buildGraph(node, leaves, subset, goal);
+
+                    if(found)
+                    {
+                        foundPath = true;
+                    }
+                }
+            }
+            return foundPath;
+        }
+    }
+
+    /*
+     * Now we create a subset of actions, except removeme action
+     * It will create a new set
+     */
+    private HashSet<ActionG> actionSubset(HashSet<ActionG> actions, ActionG removeMe)
+    {
+        HashSet<ActionG> subset = new HashSet<ActionG>();
+        foreach(ActionG action in actions)
+        {
+            if(!action.Equals(removeMe))
+            {
+                subset.Add(action);
+            }
+        }
+        return subset;
+    }
+    /*
+     * Check if the items are in 'state', and if they match
+     */
+    private bool stateCheck(HashSet<KeyValuePair<string, object>> checker, HashSet<KeyValuePair<string, object>> state)
+    {
+        bool Allmatch = true; //check if they all match
+        foreach (KeyValuePair<string, object> check in checker)
+        {
+            bool match = false;
+            foreach (KeyValuePair<string, object> s in state)
+            {
+                if (s.Equals(check.Key))
+                {
+                    match = true;
+                    break;
+                }
+            }
+            if (!match)
+                Allmatch = false;
+        }
+        return Allmatch;
+    }
 }
+
