@@ -5,7 +5,6 @@ using UnityEngine;
 public class TestAction1 : ActionG
 {
     private bool bought = false;
-    private Food targetFood;
 
     private float startTime = 0f;
     private float workDuration = 5f;
@@ -19,7 +18,6 @@ public class TestAction1 : ActionG
     public override void reset()
     {
         bought = false;
-        targetFood = null;
         startTime = 0;
     }
 
@@ -31,23 +29,15 @@ public class TestAction1 : ActionG
 
     public override bool inRangeCheck()
     {
-        return true;
+        return false;
     }
 
 
     public override bool PrePerform(GameObject agent)
     {
-        Food[] foods = (Food[])GameObject.FindObjectsOfType(typeof(Food));
-        if(foods.Length == 0)
-        {
-            return false;
-        }
-        targetFood = foods[0];
-        target = targetFood.gameObject;
-        //GameObject food = GameObject.FindGameObjectWithTag("Food");
-
-        //target = food;
-        return foods[0] != null;
+        
+        target = GameObject.FindGameObjectWithTag("Food");
+        return true;
     }
 
     /*

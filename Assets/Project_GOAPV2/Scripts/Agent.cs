@@ -7,7 +7,7 @@ public class Agent : GeneralAgent
     public override HashSet<KeyValuePair<string, object>> createGoalState()
     {
         HashSet<KeyValuePair<string, object>> goal = new HashSet<KeyValuePair<string, object>>();
-        goal.Add(new KeyValuePair<string, object>("eat", true));
+        goal.Add(new KeyValuePair<string, object>("hasMoney", true));
         return goal;
     }
 }
