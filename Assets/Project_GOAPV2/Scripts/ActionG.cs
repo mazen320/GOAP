@@ -8,7 +8,7 @@ public abstract class ActionG : MonoBehaviour
     HashSet<KeyValuePair<string, object>> afterEffects;
 
     public GameObject target;   //target can be null sometimes, depends on the action
-    bool isInRange = false;
+    bool inRange = false;
 
     /*cost is basically the weight of the action
      *Changing this can affect the way it plans things
@@ -27,7 +27,7 @@ public abstract class ActionG : MonoBehaviour
     public void initReset()
     {
         reset();
-        isInRange = false;
+        inRange = false;
         target = null;
     }
 
@@ -35,7 +35,7 @@ public abstract class ActionG : MonoBehaviour
     /*
      * Checking if the action is done
      */
-    public abstract bool succeeded(GameObject agent);
+    public abstract bool perform(GameObject agent);
     /*
      * Will return true if it succeeded the action
      * if not the action queue will clear out
@@ -53,13 +53,16 @@ public abstract class ActionG : MonoBehaviour
     /*
      * Resets vairables that need to be reset, so the planning happens again
      */
-
-    public void setIsInRange(bool isInRange)
+    public bool isInRange()
+    {
+        return inRange;
+    }
+    public void setIsInRange(bool inRange)
     {
         /*
          * Passing the bool outcome to this void
          */
-        this.isInRange = isInRange;
+        this.inRange = inRange;
     }
 
     public void addPrerequisites(string key, object value)

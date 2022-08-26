@@ -133,8 +133,8 @@ public class Planner
                     }
                 }
             }
-            return foundPath;
         }
+        return foundPath;
     }
 
     /*
@@ -174,6 +174,48 @@ public class Planner
                 Allmatch = false;
         }
         return Allmatch;
+    }
+
+    /**
+    * Apply the changeState to the currentState
+    */
+    private HashSet<KeyValuePair<string, object>> populateState(HashSet<KeyValuePair<string, object>> currentState, 
+        HashSet<KeyValuePair<string, object>> changeState)
+    {
+        HashSet<KeyValuePair<string, object>> state = new HashSet<KeyValuePair<string, object>>();
+        // We make a copy the KVPs over as new objects
+        foreach (KeyValuePair<string, object> s in currentState)
+        {
+            state.Add(new KeyValuePair<string, object>(s.Key, s.Value));
+        }
+
+        foreach (KeyValuePair<string, object> change in changeState)
+        {
+            // we check if the key exists, and if it doesnt we update the value(currentstate)
+            bool exists = false;
+
+            foreach (KeyValuePair<string, object> s in state)
+            {
+                if (s.Equals(change))
+                {
+                    exists = true;
+                    break;
+                }
+            }
+
+            if (exists)
+            {
+                state.RemoveWhere((KeyValuePair<string, object> keyValuePair) => { return keyValuePair.Key.Equals(change.Key); });
+                KeyValuePair<string, object> updated = new KeyValuePair<string, object>(change.Key, change.Value);
+                state.Add(updated);
+            }
+            // if it doesn't exist, add it(currentstate)
+            else
+            {
+                state.Add(new KeyValuePair<string, object>(change.Key, change.Value));
+            }
+        }
+        return state;
     }
 }
 
