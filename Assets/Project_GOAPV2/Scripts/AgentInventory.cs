@@ -7,4 +7,5 @@ public class AgentInventory : MonoBehaviour
     public int money = 0;
     public bool hasMoney = false;
     public bool hasFood = false;
+    public bool eaten = false;
 }

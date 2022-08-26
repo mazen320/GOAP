@@ -33,6 +33,7 @@ public class AgentG : MonoBehaviour
         createIdleState();
         createMoveToState();
         createRunActionState();
+        fsm.pushState(idle);
         loadActions();
     }
 
@@ -200,7 +201,16 @@ public class AgentG : MonoBehaviour
         {
             availableActions.Add(action);
         }
-        Debug.Log("Found actions");
+        Debug.Log("Found actions: " +printActions(actions));
     }
-
+    public static string printActions(ActionG[] actions)
+    {
+        String s = "";
+        foreach (ActionG a in actions)
+        {
+            s += a.GetType().Name;
+            s += ", ";
+        }
+        return s;
+    }
 }

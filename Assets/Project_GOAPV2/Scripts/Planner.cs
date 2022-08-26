@@ -41,6 +41,7 @@ public class Planner
         //check action can run because of their prerequiests
         HashSet<ActionG> usableActions = new HashSet<ActionG>();
         foreach (ActionG action in availableActions)
+            if(action.PrePerform(agent))
             usableActions.Add(action);
 
         /*Now that we stored all the actions we can run
